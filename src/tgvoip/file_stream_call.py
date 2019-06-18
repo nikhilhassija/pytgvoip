@@ -22,6 +22,8 @@ from typing import Union, List, IO, Iterable
 
 from tgvoip import VoIPOutgoingCall, VoIPIncomingCall, VoIPService
 from tgvoip.base_call import VoIPCallBase
+import pyrogram
+import sys
 
 
 class VoIPFileStreamCallMixin(VoIPCallBase):
@@ -89,6 +91,11 @@ class VoIPFileStreamCallMixin(VoIPCallBase):
             if len(frame) != length:
                 self.input_files[0].close()
                 self.input_files.popleft()
+                #Discard call to stop playng the streamed file in loop
+                self.discard_call()
+                #raise pyrogram.StopPropagation
+                #sys.exit(0)
+		
         elif len(self.hold_files):
             frame = self.hold_files[0].read(length)
             if len(frame) != length:
